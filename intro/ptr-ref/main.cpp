@@ -1,5 +1,4 @@
 #include "tasks.h"
-
 #include <cassert>
 #include <iostream>
 
@@ -77,5 +76,4 @@ int main() {
     CheckReferences();
     return 0;
 }
-
 
