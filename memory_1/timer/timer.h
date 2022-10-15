@@ -1,3 +1,4 @@
+
 class Timer {
 public:
     bool Expired() const;
