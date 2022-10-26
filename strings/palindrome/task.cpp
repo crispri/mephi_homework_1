@@ -1,9 +1,9 @@
 #include "task.h"
 #include <string>
 bool is_palindrome(const std::string& s) {
-    std::string ans="";
+    string ans="";
     for(long unsigned int i=0;i<s.length();i++){
-        
+
         if ((s[i]<='Z' and s[i]>='A') or(s[i]<='z' and s[i]>='a'))
             ans+=s[i];
     }
