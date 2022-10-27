@@ -155,7 +155,7 @@ public:
         else{T* Elem_=new T [Size()+1];
             if(pos==0){
                 Elem_[0]=value;
-                for(int i=1;i<Size()+1;i++) {
+                for( size_t i=1;i<Size()+1;i++) {
                     Elem_[i] = Elements_[i - 1];
                 }
                 delete[] Elements_;
@@ -164,7 +164,7 @@ public:
                 return true;
             }
             else if(pos==Size()){
-                for(int i=0;i<Size();i++) {
+                for(size_t i=0;i<Size();i++) {
                     Elem_[i] = Elements_[i];
                 }
                 Elem_[Size()]=value;
@@ -178,7 +178,7 @@ public:
                     Elem_[i]=Elements_[i];
                 }
                 Elem_[pos]=value;
-                for(int i=pos+1;i<Size()+1;i++)
+                for(size_t i=pos+1;i<Size()+1;i++)
                     Elem_[i]=Elements_[i-1];
                 delete[] Elements_;
                 Elements_=Elem_;
@@ -195,7 +195,7 @@ public:
             for(size_t i=0;i<pos+1;i++){
                 Elem_[i]=Elements_[i];
             }
-            for(int i=pos+1;i<Size();i++)
+            for(size_t i=pos+1;i<Size();i++)
                 Elem_[i-1]=Elements_[i];
             delete[] Elements_;
             Elements_=Elem_;
