@@ -12,7 +12,7 @@ public:
         Elements_= new T[2];
         Size_=0;
         Capacity_=2;
-        // Ostream_<<"Constructed. "<<*this<<"\n";
+         Ostream_<<"Constructed. "<<*this<<"\n";
     }
 
 
@@ -23,7 +23,7 @@ public:
         for(size_t i=0;i<Size();i++){
             Elements_[i]=array.Elements_[i];
         }
-        //Ostream_<<"Constructed from another Array. "<<*this<<"\n";
+        Ostream_<<"Constructed from another Array. "<<*this<<"\n";
     }
 
     Array(size_t size, std::ostream& ostream = std::cout, T defaultValue = T()): Ostream_(ostream){
@@ -33,13 +33,13 @@ public:
         for(size_t i=0;i<size;i++){
             Elements_[i]=defaultValue;
         }
-        //Ostream_<<"Constructed with default. "<<*this<<"\n";
+        Ostream_<<"Constructed with default. "<<*this<<"\n";
 
     }
 
     ~Array() {
         delete[] Elements_;
-        //  Ostream_<<"Destructed "<<Size_<<"\n";
+          Ostream_<<"Destructed "<<Size_<<"\n";
     }
 
     size_t Size() const {
@@ -83,6 +83,9 @@ public:
 
     //const T& operator [](const size_t i) const {
     //}
+    const T& operator [](const size_t i) const {
+        return Elements_[i];
+    }
 
     T& operator [](const size_t& i) {
         return *(Elements_+i);
@@ -207,35 +210,31 @@ public:
     void Clear() {
         delete[] Elements_;
     }
+    friend std::ostream& operator <<(std::ostream& ostream, const Array<T>& array){
+        if(array.Size() == 0){
+            ostream << "Result Array's capacity is " << array.Capacity() << " and size is " << 0;
+        }else if(array.Size() > 0){
+            ostream << "Result Array's capacity is " << array.Capacity() << " and size is " << array.Size()
+                    << ", elements are: ";
+            for (size_t i = 0; i < array.Size() - 1; ++i){
+                ostream << *(array.Elements_ + i) << ", ";
+            }
+            ostream << *(array.Elements_ + array.Size() - 1);
+        }
+        return ostream;
+    }
 
-    T* begin() const{
-        return Elements_;}
-    T* end() const{
+
+
+    T* begin()const{
+        return Elements_;
+    }
+    T* end()const{
         return Elements_+Size();
     }
+
+
 };
-
-
-
-template<typename T>
-std::ostream&  operator <<(std::ostream& ostream, const Array<T>& array) {
-
-    ostream<<"Result Array's capacity is " <<array.Capacity()<<" and size is "<<array.Size();
-    if (array.Size()!=0){
-        ostream<<", elements are:";
-        for(size_t i=0;i<array.Size()-1;i++){
-            ostream<<" "<<array.Elements_[i]<<",";
-        }
-        ostream<<" "<<array.Elements_[array.Size()-1];
-    }
-
-
-    return ostream;
-}
-
-
-
-
 
 
 
