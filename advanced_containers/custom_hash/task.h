@@ -12,13 +12,25 @@ struct SuperKey {
     }
 };
 
-/*
- * Напишите хэш-функцию, реализовав специализацию шаблона std::hash для типа SuperKey
- * Напишите функцию PopulateHashMap, которая добавляет в hashMap пары ключ-значение из данного вектора toAdd
- */
-void PopulateHashMap(
-    std::unordered_map<SuperKey, std::string>& hashMap,
-    const std::vector<std::pair<SuperKey, std::string>>& toAdd
-);
-size_t operator() (SuperKey& s);
+namespace std{
 
+    template<>
+    struct hash<SuperKey>{
+        std::size_t operator()(const SuperKey& Skey) const
+        {
+            using std::size_t;
+            using std::hash;
+            using std::string;
+
+            return (hash<std::string>()(Skey.StrPart));
+        }
+
+    };
+
+
+}
+
+void PopulateHashMap(
+        std::unordered_map<SuperKey, std::string>& hashMap,
+        const std::vector<std::pair<SuperKey, std::string>>& toAdd
+);
