@@ -20,4 +20,5 @@ void PopulateHashMap(
     std::unordered_map<SuperKey, std::string>& hashMap,
     const std::vector<std::pair<SuperKey, std::string>>& toAdd
 );
+size_t operator() (SuperKey& s);
 
