@@ -6,7 +6,6 @@
  * Выходной диапазон начинается с firstOut и имеет такую же длину как входной диапазон
  * Операция является функцией с одним аргументом (унарная функция), возвращающая результат такого типа, который можно положить в OutputIt
  */
-
 template<class InputIt, class OutputIt, class UnaryOperation>
 void Transform(InputIt firstIn, InputIt lastIn, OutputIt firstOut, UnaryOperation op) {
     firstOut=firstIn;
