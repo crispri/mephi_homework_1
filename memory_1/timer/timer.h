@@ -3,17 +3,19 @@
 #include "iostream"
 class Timer {
 public:
-    using s      = std::chrono::duration< int>;
-    Timer(s m_StartTime ): m_StartTime(m_StartTime){};
+
+    Timer(  std::chrono::seconds sec ): polzovatel(sec){
+        m_StartTime=std::chrono::steady_clock::now();
+    };
     bool Expired() const{
-        if (steadyClock.now() >= this->m_StartTime)
+        while( std::chrono::steady_clock::now()-m_StartTime<=polzovatel){
             return false;
-        else
-            return true;
+        }
+        return true;
     };
 private:
     std::chrono::time_point<std::chrono::steady_clock> m_StartTime;
-    std::chrono::steady_clock steadyClock;
+    std::chrono::seconds polzovatel;
 };
 
 class TimeMeasurer {
@@ -31,5 +33,7 @@ private:
     std::stringstream& stream;
     std::chrono::steady_clock::time_point m_start;
 };
+
+
 
 
