@@ -1,17 +1,20 @@
 #include <cstdlib>
 #include <iterator>
+
 /*
  * Нужно написать функцию, которая принимает на вход диапазон, применяет к каждому элементу данную операцию и затем складывает результат применения операции в новый диапазон
  * Входной диапазон задан итераторами [firstIn; lastIn)
  * Выходной диапазон начинается с firstOut и имеет такую же длину как входной диапазон
  * Операция является функцией с одним аргументом (унарная функция), возвращающая результат такого типа, который можно положить в OutputIt
  */
+
 template<class InputIt, class OutputIt, class UnaryOperation>
 void Transform(InputIt firstIn, InputIt lastIn, OutputIt firstOut, UnaryOperation op) {
-    firstOut=firstIn;
-    while (firstOut!=lastIn)
-        *firstOut++ = op(*firstOut);
-
+    OutputIt result = firstOut;
+    while (firstIn!=lastIn) {
+        *result++ = op(*firstIn);
+        firstIn++;
+    }
 
 }
 
@@ -38,19 +41,20 @@ void Partition(BidirIt first, BidirIt last, UnaryPredicate p) {
  */
 template<class InputIt1, class InputIt2, class OutputIt>
 void Merge(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt firstOut) {
+    OutputIt result =firstOut;
     while(first1!=last1 and first2!=last2){
         if (*first1<*first2){
-            *firstOut++= *first1++;
+            *result++= *first1++;
 
         }
         else
-            *firstOut++= *first2++;
+            *result++= *first2++;
 
     }
     while(first1!=last1)
-        *firstOut++=*first1++;
+        *result++=*first1++;
     while(first2!=last2)
-        *firstOut++=*first2++;
+        *result++=*first2++;
 
 }
 
@@ -95,6 +99,9 @@ public:
         bool operator ==(const Iterator& rhs) const {
             return rhs.m_ptr==m_ptr;
         }
+        bool operator !=(const Iterator& rhs) const {
+            return rhs.m_ptr!=m_ptr;
+        }
 
         bool operator <(const Iterator& rhs) const {
             return rhs.m_ptr<m_ptr;
@@ -105,7 +112,8 @@ public:
 
     };
 
-    FibonacciRange(size_t amount) {
+    FibonacciRange(size_t amount): Size_(amount){
+        Elements_ = new uint64_t[amount];
         if (amount==1)
             Elements_[0]=1;
         else if (amount==2){
@@ -120,11 +128,11 @@ public:
     }
 
     Iterator begin() const {
-        return Iterator(&Elements_[0]);
+        return Iterator(Elements_);
     }
 
     Iterator end() const {
-        return Iterator(&Elements_[Size_]);
+        return Iterator(Elements_+Size_);
     }
 
     size_t size() const {
