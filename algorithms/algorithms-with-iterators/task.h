@@ -10,6 +10,11 @@
 
 template<class InputIt, class OutputIt, class UnaryOperation>
 void Transform(InputIt firstIn, InputIt lastIn, OutputIt firstOut, UnaryOperation op) {
+    firstOut=firstIn;
+    while (firstOut!=lastIn)
+        *firstOut++ = op(*firstOut);
+
+
 }
 
 /*
@@ -21,6 +26,13 @@ void Transform(InputIt firstIn, InputIt lastIn, OutputIt firstOut, UnaryOperatio
 
 template<class BidirIt, class UnaryPredicate>
 void Partition(BidirIt first, BidirIt last, UnaryPredicate p) {
+    while(first!=last){
+        if (!(p(*first))){
+            *first++= p(*first);}
+        else
+            first++;
+
+    }
 }
 
 /*
@@ -28,6 +40,20 @@ void Partition(BidirIt first, BidirIt last, UnaryPredicate p) {
  */
 template<class InputIt1, class InputIt2, class OutputIt>
 void Merge(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt firstOut) {
+    while(first1!=last1 and first2!=last2){
+        if (*first1<*first2){
+            *firstOut++= *first1++;
+
+        }
+        else
+            *firstOut++= *first2++;
+
+    }
+    while(first1!=last1)
+        *firstOut++=*first1++;
+    while(first2!=last2)
+        *firstOut++=*first2++;
+
 }
 
 
@@ -47,34 +73,68 @@ public:
         using pointer = value_type*;
         using reference = value_type&;
         using iterator_category = std::input_iterator_tag;
-
+        Iterator(pointer m_ptr):m_ptr(m_ptr){}
         value_type operator *() const {
             // разыменование итератора -- доступ к значению
+            return *m_ptr;
+
         }
 
         Iterator& operator ++() {
             // prefix increment
+            m_ptr++;
+            return *this;
         }
 
         Iterator operator ++(int) {
             // postfix increment
+            Iterator copy = *this;
+            operator++();
+            return copy;
+
         }
 
         bool operator ==(const Iterator& rhs) const {
+            return rhs.m_ptr==m_ptr;
         }
 
         bool operator <(const Iterator& rhs) const {
+            return rhs.m_ptr<m_ptr;
         }
+
+    private:
+        pointer m_ptr;
+
     };
 
-    FibonacciRange(size_t amount) {}
+    FibonacciRange(size_t amount) {
+        if (amount==1)
+            Elements_[0]=1;
+        else if (amount==2){
+            Elements_[0]=1;
+            Elements_[1]=2;
+        }
+        else{Elements_[0]=1;
+            Elements_[1]=2;
+            for(size_t i=2;i< amount;i++){
+                Elements_[i]=Elements_[i-1]+Elements_[i-2];
+            }}
+    }
 
     Iterator begin() const {
+        return Iterator(&Elements_[0]);
     }
 
     Iterator end() const {
+        return Iterator(&Elements_[Size_]);
     }
 
     size_t size() const {
+        return Size_;
+
     }
+
+private:
+    uint64_t *Elements_;
+    uint64_t Size_;
 };
