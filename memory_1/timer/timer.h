@@ -20,14 +20,13 @@ private:
 
 class TimeMeasurer {
 public:
-    using ms      = std::chrono::duration< int>;
-    TimeMeasurer(std::stringstream& sstream):stream(sstream),m_start(std::chrono::steady_clock::now()){
+    TimeMeasurer(std::stringstream& stream):stream(stream){
+        m_start=(std::chrono::steady_clock::now());
 
     }
 
     ~TimeMeasurer(){
-        auto life=std::chrono::steady_clock::now()-m_start;
-        std::cout<<"Elapsed time: "<< std::chrono::duration_cast<std::chrono::milliseconds>(life).count();
+        stream<<"Elapsed time: "<< std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-m_start).count()<<std::endl;
     }
 private:
     std::stringstream& stream;
