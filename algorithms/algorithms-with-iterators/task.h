@@ -1,6 +1,5 @@
 #include <cstdlib>
 #include <iterator>
-
 /*
  * Нужно написать функцию, которая принимает на вход диапазон, применяет к каждому элементу данную операцию и затем складывает результат применения операции в новый диапазон
  * Входной диапазон задан итераторами [firstIn; lastIn)
@@ -24,18 +23,37 @@ void Transform(InputIt firstIn, InputIt lastIn, OutputIt firstOut, UnaryOperatio
  * Входной диапазон задан итераторами [first; last)
  * p является функцией с одним аргументом (унарная функция), возвращающая результат типа bool
  */
-
 template<class BidirIt, class UnaryPredicate>
 void Partition(BidirIt first, BidirIt last, UnaryPredicate p) {
-    while(first!=last){
-        if (!(p(*first))){
-            *first++= p(*first);}
-        else
-            first++;
-
+    bool is_okay=false;
+    BidirIt i=first;
+    BidirIt j=++i;
+    i--;
+    for(auto i=first;i!=last;i++){
+        if(!p(*i)){
+            is_okay=true;
+        }
     }
-}
+    if (is_okay){
+        while(j!=last and i!=last) {
+            if(p(*j)){
+                if(!p(*i)){
+                    std::swap(*i,*j);
+                    i++;
 
+                }
+                else {
+                    while(p(*i))
+                        i++;
+                    std::swap(*i,*j);
+                    i++;
+                }
+
+            }
+            j++;
+
+        }}
+}
 /*
  * Нужно написать функцию, которая принимает на вход два отстотированных диапазона и объединяет их в новый отсортированный диапазон, содержащий все элементы обоих входных диапазонов.
  */
