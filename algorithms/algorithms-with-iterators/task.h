@@ -40,7 +40,6 @@ void Partition(BidirIt first, BidirIt last, UnaryPredicate p) {
                 if(!p(*i)){
                     std::swap(*i,*j);
                     i++;
-
                 }
                 else {
                     while(p(*i))
