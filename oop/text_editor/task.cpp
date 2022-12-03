@@ -65,12 +65,12 @@ class MoveCursorRightCommand : public ICommand {
 public:
     MoveCursorRightCommand()=default;
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
-        cursorPosition+=1;
+      /*  cursorPosition+=1;
         if(editor.HasSelection())
-            editor.UnselectText();
+            editor.UnselectText();*/
     }
     void AcceptVisitor(CommandVisitor& visitor){
-        visitor.VisitMoveCursorRightCommand(*this);
+        /*visitor.VisitMoveCursorRightCommand(*this);*/
     }
 };
 
@@ -209,15 +209,15 @@ class DeleteTextCommand : public ICommand {
 public:
     DeleteTextCommand()=default;
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
-        if(editor.HasSelection()){
+        /*if(editor.HasSelection()){
             buffer=buffer.substr(0,editor.GetSelection().first)+buffer.substr(editor.GetSelection().second,buffer.size()-editor.GetSelection().second);
             editor.UnselectText();}
         else
             buffer=  buffer.substr(0,cursorPosition)+buffer.substr(cursorPosition,buffer.size()-cursorPosition);
-
+*/
     }
     void AcceptVisitor(CommandVisitor& visitor){
-        visitor.VisitDeleteTextCommand(*this);
+        //visitor.VisitDeleteTextCommand(*this);
     }
 
 };
