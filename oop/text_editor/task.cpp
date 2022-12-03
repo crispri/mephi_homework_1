@@ -1,7 +1,6 @@
 #include "task.h"
 #include "logged_command_wrapper.h"
 CommandLoggerVisitor::CommandLoggerVisitor(std::ostream &logStream):logStream_(logStream){}
-
 void CommandLoggerVisitor::VisitInsertTextCommand(InsertTextCommand &command) {
     this->logStream_<<'i';
 }
@@ -387,14 +386,8 @@ public:
         }
 
     }
-
 private:
     std::list<CommandPtr> macro_;
-
-
-
-
-
 };
 CommandBuilder::CommandBuilder() :logStreamPtr_(nullptr){}
 CommandBuilder &CommandBuilder::Text(std::string text) {
@@ -479,6 +472,4 @@ CommandPtr CommandBuilder::build() {
     }
     else
         return ptr;
-
-
 }
