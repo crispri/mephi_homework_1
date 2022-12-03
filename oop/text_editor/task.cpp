@@ -44,6 +44,9 @@ void CommandLoggerVisitor::VisitMoveToStartCommand(MoveToStartCommand &command) 
 void CommandLoggerVisitor::VisitDeleteWordCommand(DeleteWordCommand &command) {
     this->logStream_<<"dE";
 }
+
+
+
 /* Курсор влево */
 class MoveCursorLeftCommand : public ICommand {
 public:
@@ -60,6 +63,16 @@ public:
 
 /* Курсор вправо */
 class MoveCursorRightCommand : public ICommand {
+public:
+    MoveCursorRightCommand()=default;
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
+        cursorPosition+=1;
+        if(editor.HasSelection())
+            editor.UnselectText();
+    }
+    void AcceptVisitor(CommandVisitor& visitor){
+        visitor.VisitMoveCursorRightCommand(*this);
+    }
 };
 
 /* Курсор вверх */
@@ -194,6 +207,20 @@ private:
 
 /* Удалить текст */
 class DeleteTextCommand : public ICommand {
+public:
+    DeleteTextCommand()=default;
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
+        if(editor.HasSelection()){
+            buffer=buffer.substr(0,editor.GetSelection().first)+buffer.substr(editor.GetSelection().second,buffer.size()-editor.GetSelection().second);
+            editor.UnselectText();}
+        else
+            buffer=  buffer.substr(0,cursorPosition)+buffer.substr(cursorPosition,buffer.size()-cursorPosition);
+
+    }
+    void AcceptVisitor(CommandVisitor& visitor){
+        visitor.VisitDeleteTextCommand(*this);
+    }
+
 };
 
 /* Скопировать текст */
@@ -438,6 +465,13 @@ CommandPtr CommandBuilder::build() {
         case Type::UppercaseText:
             ptr= std::make_shared<UppercaseTextCommand>(UppercaseTextCommand());
             break;
+        case Type::DeleteText:
+            ptr=std::make_shared<DeleteTextCommand>(DeleteTextCommand());
+            break;
+        case Type::MoveCursorRight:
+            ptr=std::make_shared<MoveCursorRightCommand>(MoveCursorRightCommand());
+            break;
+
     }
     if(logStreamPtr_!= nullptr){
         CommandPtr commandWrapper=std::make_shared<LoggedCommandWrapper>(LoggedCommandWrapper(*(this->logStreamPtr_),ptr));
@@ -445,4 +479,6 @@ CommandPtr CommandBuilder::build() {
     }
     else
         return ptr;
+
+
 }
