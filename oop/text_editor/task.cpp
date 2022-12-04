@@ -372,7 +372,6 @@ public:
 class MacroCommand : public ICommand {
 public:
     explicit MacroCommand(std::list<CommandPtr> subcommands):macro_(std::move(subcommands)){
-
     }
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
         for(const auto & i:macro_){
