@@ -51,12 +51,12 @@ void CommandLoggerVisitor::VisitDeleteWordCommand(DeleteWordCommand &command) {
 class MoveCursorLeftCommand : public ICommand {
 public:
     MoveCursorLeftCommand()=default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
         cursorPosition-=1;
         if(editor.HasSelection())
             editor.UnselectText();
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitMoveCursorLeftCommand(*this);
     }
 };
@@ -65,12 +65,12 @@ public:
 class MoveCursorRightCommand : public ICommand {
 public:
     MoveCursorRightCommand()=default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
         cursorPosition+=1;
         if(editor.HasSelection())
             editor.UnselectText();
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitMoveCursorRightCommand(*this);
     }
 };
@@ -79,7 +79,7 @@ public:
 class MoveCursorUpCommand : public ICommand {
 public:
     MoveCursorUpCommand()=default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) {
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
         size_t count_from_start=0;
         if(cursorPosition!=0){
             cursorPosition = buffer[cursorPosition]!='\n'?cursorPosition:cursorPosition-1;
@@ -108,7 +108,7 @@ public:
         if(editor.HasSelection())
             editor.UnselectText();
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitMoveCursorUpCommand(*this);
     }
 
@@ -118,7 +118,7 @@ public:
 class MoveCursorDownCommand : public ICommand {
 public:
     MoveCursorDownCommand()=default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) {
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
         size_t count_from_start=0;
         size_t s= cursorPosition;
         if(buffer[cursorPosition]!='\n' ) {
@@ -150,7 +150,7 @@ public:
             editor.UnselectText();
 
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor)override{
         visitor.VisitMoveCursorDownCommand(*this);
     }
 };
@@ -158,12 +158,12 @@ public:
 /* Выделить текст */
 class SelectTextCommand : public ICommand {
 public:
-    SelectTextCommand(size_t selectionSize):selectionSize_(selectionSize){}
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
+    explicit SelectTextCommand(size_t selectionSize):selectionSize_(selectionSize){}
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
         editor.SelectText(cursorPosition,cursorPosition+this->selectionSize_);
 
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor)override{
         visitor.VisitSelectCommand(*this);
 
     }
@@ -175,8 +175,8 @@ private:
 /* Ввести текст */
 class InsertTextCommand : public ICommand {
 public:
-    InsertTextCommand(std::string text):text_(std::move(text)) { };
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
+    explicit InsertTextCommand(std::string text):text_(std::move(text)) { };
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
         if(this->text_[0]=='\n' and buffer[cursorPosition-1]=='\n'){
             buffer=buffer.substr(0, cursorPosition-1)+this->text_+buffer.substr(cursorPosition,buffer.size());
             cursorPosition+=text_.size()-1;
@@ -195,7 +195,7 @@ public:
 
 
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitInsertTextCommand(*this);
     }
 
@@ -207,7 +207,7 @@ private:
 class DeleteTextCommand : public ICommand {
 public:
     DeleteTextCommand()=default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
         if(editor.HasSelection()){
             buffer=buffer.substr(0,editor.GetSelection().first)+buffer.substr(editor.GetSelection().second,buffer.size()-editor.GetSelection().second);
             editor.UnselectText();}
@@ -215,7 +215,7 @@ public:
             buffer=  buffer.substr(0,cursorPosition)+buffer.substr(cursorPosition,buffer.size()-cursorPosition);
 
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitDeleteTextCommand(*this);
     }
 
@@ -225,7 +225,7 @@ public:
 class CopyTextCommand : public ICommand {
 public:
     CopyTextCommand()=default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
         if(editor.HasSelection())
             clipboard=buffer.substr(editor.GetSelection().first,editor.GetSelection().second - editor.GetSelection().first);
         else
@@ -233,7 +233,7 @@ public:
         if(editor.HasSelection())
             editor.UnselectText();
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitCopyTextCommand(*this);
 
     }
@@ -244,7 +244,7 @@ public:
 class PasteTextCommand : public ICommand {
 public:
     PasteTextCommand() = default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
         if(!editor.HasSelection()){
             buffer=buffer.substr(0,cursorPosition)+clipboard+buffer.substr(cursorPosition, buffer.size());
             cursorPosition+=clipboard.size();
@@ -257,7 +257,7 @@ public:
         }
 
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitPasteTextCommand(*this);
 
     }
@@ -267,7 +267,7 @@ public:
 class UppercaseTextCommand : public ICommand {
 public:
     UppercaseTextCommand() = default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) {
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
         if(editor.HasSelection()){
             for(size_t i = editor.GetSelection().first;i<=editor.GetSelection().second;i++)
                 buffer[i]=std::toupper(buffer[i]);
@@ -275,7 +275,7 @@ public:
         if(editor.HasSelection())
             editor.UnselectText();
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitUppercaseTextCommand(*this);
     }
 };
@@ -284,7 +284,7 @@ public:
 class LowercaseTextCommand : public ICommand {
 public:
     LowercaseTextCommand() = default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) {
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
         if(editor.HasSelection()){
             for(size_t i = editor.GetSelection().first;i<=editor.GetSelection().second;i++)
                 buffer[i]=std::tolower(buffer[i]);
@@ -292,7 +292,7 @@ public:
         if(editor.HasSelection())
             editor.UnselectText();
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitLowercaseTextCommand(*this);
 
     }
@@ -304,7 +304,7 @@ class MoveToEndCommand : public ICommand {
 public:
     MoveToEndCommand() = default;
 
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) {
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
         while(buffer[cursorPosition]!='\n' and cursorPosition<buffer.size())
             cursorPosition +=1;
         if(buffer[cursorPosition]=='\n')
@@ -312,7 +312,7 @@ public:
         if(editor.HasSelection())
             editor.UnselectText();
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitMoveToEndCommand(*this);
 
     }
@@ -324,7 +324,7 @@ class MoveToStartCommand : public ICommand {
 public:
     MoveToStartCommand() = default;
 
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) {
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
 
         while(buffer[cursorPosition]!='\n' and cursorPosition!=0){
             cursorPosition-=1;
@@ -335,7 +335,7 @@ public:
             editor.UnselectText();
 
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitMoveToStartCommand(*this);
 
     }
@@ -346,7 +346,7 @@ public:
 class DeleteWordCommand : public ICommand {
 public:
     DeleteWordCommand() =default;
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) {
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
         /*if(editor.HasSelection()){
             buffer= buffer.substr(0,editor.GetSelection().first)+buffer.substr(editor.GetSelection().second, buffer.size());
             editor.UnselectText();
@@ -362,7 +362,7 @@ public:
         if(editor.HasSelection())
             editor.UnselectText();
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitDeleteWordCommand(*this);
     }
 };
@@ -370,16 +370,16 @@ public:
 /* Макрос */
 class MacroCommand : public ICommand {
 public:
-    MacroCommand(std::list<CommandPtr> subcommands):macro_(std::move(subcommands)){
+    explicit MacroCommand(std::list<CommandPtr> subcommands):macro_(std::move(subcommands)){
 
     }
-    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) {
+    void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
         for(const auto & i:macro_){
 
             i->Apply(buffer,cursorPosition,clipboard,editor);
         }
     }
-    void AcceptVisitor(CommandVisitor& visitor){
+    void AcceptVisitor(CommandVisitor& visitor) override{
         for(const auto & i: macro_){
             i->AcceptVisitor(visitor);
         }
@@ -396,7 +396,7 @@ private:
 };
 CommandBuilder::CommandBuilder() :logStreamPtr_(nullptr){}
 CommandBuilder &CommandBuilder::Text(std::string text) {
-    this->text_=text;
+    this->text_=std::move(text);
     return *this;
 }
 
@@ -410,7 +410,7 @@ CommandBuilder &CommandBuilder::SelectionSize(size_t selectionSize) {
     return *this;
 }
 
-CommandBuilder &CommandBuilder::AddSubcommand(CommandPtr subcommand) {
+CommandBuilder &CommandBuilder::AddSubcommand( CommandPtr subcommand) {
     this->subcommands_.push_back(subcommand);
     return *this;
 }
@@ -477,4 +477,6 @@ CommandPtr CommandBuilder::build() {
     }
     else
         return ptr;
+
+
 }
