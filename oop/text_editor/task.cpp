@@ -352,10 +352,6 @@ class DeleteWordCommand : public ICommand {
 public:
     DeleteWordCommand() =default;
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
-        /*if(editor.HasSelection()){
-            buffer= buffer.substr(0,editor.GetSelection().first)+buffer.substr(editor.GetSelection().second, buffer.size());
-            editor.UnselectText();
-        }*/
         // else{
         size_t prev_cursorPosition=cursorPosition;
         while(buffer[cursorPosition]!=' ' and buffer[cursorPosition]!='\n'){
