@@ -341,7 +341,6 @@ public:
             cursorPosition+=1;}
         if(editor.HasSelection())
             editor.UnselectText();
-
     }
     void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitMoveToStartCommand(*this);
