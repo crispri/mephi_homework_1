@@ -52,7 +52,10 @@ class MoveCursorLeftCommand : public ICommand {
 public:
     MoveCursorLeftCommand()=default;
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
-        cursorPosition-=1;
+        if(cursorPosition!=0){
+            cursorPosition-=1;
+            if(buffer[cursorPosition]=='\n')
+                cursorPosition--;}
         if(editor.HasSelection())
             editor.UnselectText();
     }
@@ -66,7 +69,12 @@ class MoveCursorRightCommand : public ICommand {
 public:
     MoveCursorRightCommand()=default;
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override{
-        cursorPosition+=1;
+        if(cursorPosition!=buffer.size()-1){
+            cursorPosition+=1;
+            if(buffer[cursorPosition]=='\n')
+                cursorPosition++;}
+        else
+            cursorPosition++;
         if(editor.HasSelection())
             editor.UnselectText();
     }
@@ -324,6 +332,8 @@ public:
     MoveToStartCommand() = default;
 
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
+        if(cursorPosition>buffer.size()-1)
+            cursorPosition=buffer.size()-1;
         while(buffer[cursorPosition]!='\n' and cursorPosition!=0){
             cursorPosition-=1;
         }
