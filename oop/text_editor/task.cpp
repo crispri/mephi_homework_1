@@ -1,6 +1,7 @@
 #include "task.h"
 #include "logged_command_wrapper.h"
 CommandLoggerVisitor::CommandLoggerVisitor(std::ostream &logStream):logStream_(logStream){}
+
 void CommandLoggerVisitor::VisitInsertTextCommand(InsertTextCommand &command) {
     this->logStream_<<'i';
 }
@@ -65,12 +66,12 @@ class MoveCursorRightCommand : public ICommand {
 public:
     MoveCursorRightCommand()=default;
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
-      /*  cursorPosition+=1;
+        cursorPosition+=1;
         if(editor.HasSelection())
-            editor.UnselectText();*/
+            editor.UnselectText();
     }
     void AcceptVisitor(CommandVisitor& visitor){
-        /*visitor.VisitMoveCursorRightCommand(*this);*/
+        visitor.VisitMoveCursorRightCommand(*this);
     }
 };
 
@@ -80,32 +81,30 @@ public:
     MoveCursorUpCommand()=default;
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) {
         size_t count_from_start=0;
-        size_t prev_cursorPosition = cursorPosition;
-        if(buffer[cursorPosition]!='\n'){while (buffer[cursorPosition]!='\n'){
-                cursorPosition-=1;
-                count_from_start+=1;
+        if(cursorPosition!=0){
+            cursorPosition = buffer[cursorPosition]!='\n'?cursorPosition:cursorPosition-1;
+            while(cursorPosition!=0 and buffer[cursorPosition]!='\n'){
+                --cursorPosition;
+                ++count_from_start;
             }
-            count_from_start-=1;
-            cursorPosition-=1;}
-        else{
-            cursorPosition-=1;
-            while (buffer[cursorPosition]!='\n'){
-                cursorPosition-=1;
-                count_from_start+=1;
+            if(buffer[cursorPosition]=='\n'){
+                //count_from_start+=1;
+                --cursorPosition;
+                while(cursorPosition!=0 and buffer[cursorPosition]!='\n'){
+                    --cursorPosition;
+                }
+                if(buffer[cursorPosition]=='\n')cursorPosition++;
+                else
+                    count_from_start--;
+                // cursorPosition=buffer[cursorPosition]=='\n'?cursorPosition++:cursorPosition;
+                //cursorPosition+=count_from_start;
             }
-            //count_from_start-=1;
-            cursorPosition-=1;}
-        if(buffer.size()>cursorPosition){
-            size_t count_chars_in_srting=0;
-            while(buffer[cursorPosition]!='\n' and cursorPosition!=0){
-                cursorPosition-=1;
-                count_chars_in_srting+=1;
-            }
-            if(buffer[cursorPosition]=='\n')
-                cursorPosition+=1;
-            cursorPosition+=count_from_start;}
-        else
-            cursorPosition = prev_cursorPosition;
+
+            cursorPosition+=count_from_start;
+        }
+
+
+
         if(editor.HasSelection())
             editor.UnselectText();
     }
@@ -209,15 +208,15 @@ class DeleteTextCommand : public ICommand {
 public:
     DeleteTextCommand()=default;
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor){
-        /*if(editor.HasSelection()){
+        if(editor.HasSelection()){
             buffer=buffer.substr(0,editor.GetSelection().first)+buffer.substr(editor.GetSelection().second,buffer.size()-editor.GetSelection().second);
             editor.UnselectText();}
         else
             buffer=  buffer.substr(0,cursorPosition)+buffer.substr(cursorPosition,buffer.size()-cursorPosition);
-*/
+
     }
     void AcceptVisitor(CommandVisitor& visitor){
-        //visitor.VisitDeleteTextCommand(*this);
+        visitor.VisitDeleteTextCommand(*this);
     }
 
 };
@@ -386,8 +385,14 @@ public:
         }
 
     }
+
 private:
     std::list<CommandPtr> macro_;
+
+
+
+
+
 };
 CommandBuilder::CommandBuilder() :logStreamPtr_(nullptr){}
 CommandBuilder &CommandBuilder::Text(std::string text) {
