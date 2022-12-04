@@ -330,7 +330,6 @@ public:
 class MoveToStartCommand : public ICommand {
 public:
     MoveToStartCommand() = default;
-
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
         if(cursorPosition>buffer.size()-1)
             cursorPosition=buffer.size()-1;
