@@ -74,7 +74,6 @@ public:
         visitor.VisitMoveCursorRightCommand(*this);
     }
 };
-
 /* Курсор вверх */
 class MoveCursorUpCommand : public ICommand {
 public:
