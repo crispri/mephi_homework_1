@@ -345,7 +345,6 @@ public:
     }
     void AcceptVisitor(CommandVisitor& visitor) override{
         visitor.VisitMoveToStartCommand(*this);
-
     }
 
 };
