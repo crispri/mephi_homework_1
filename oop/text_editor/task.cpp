@@ -475,6 +475,4 @@ CommandPtr CommandBuilder::build() {
     }
     else
         return ptr;
-
-
 }
