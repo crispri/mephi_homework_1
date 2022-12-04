@@ -324,7 +324,6 @@ public:
     MoveToStartCommand() = default;
 
     void Apply(std::string& buffer, size_t& cursorPosition, std::string& clipboard, TextEditor& editor) override {
-
         while(buffer[cursorPosition]!='\n' and cursorPosition!=0){
             cursorPosition-=1;
         }
