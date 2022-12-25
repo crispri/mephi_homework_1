@@ -5,9 +5,6 @@ public:
     Array(const Array& array);
     Array(size_t size, std::ostream& ostream = std::cout, int defaultValue=0 );
     ~Array();
-
-
-
     size_t Size() const;
     size_t Capacity() const;
     void Reserve(size_t newCapacity);
