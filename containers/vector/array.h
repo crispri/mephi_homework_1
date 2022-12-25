@@ -15,7 +15,7 @@ public:
     void PushBack(int value = 0);
     void PopBack();
 
-    int& operator [](const size_t& i);
+    long long& operator [](const size_t& i);
     explicit operator bool() const;
 
     bool operator <(const Array& it) const;
@@ -31,13 +31,13 @@ public:
     friend std::ostream& operator <<(std::ostream& ostream, const Array& array);
 
 private:
-    int* Elements_;
-    size_t Size_;
-    size_t Capacity_;
+    long long* Elements_;
+    long long Size_;
+    long long Capacity_;
     std::ostream& Ostream_;
 };
 Array::Array(std::ostream& ostream): Ostream_(ostream){
-    Elements_= new int[2];
+    Elements_= new long long[2];
     Size_=0;
     Capacity_=2;
     Ostream_<<"Constructed. "<<*this<<"\n";
@@ -45,7 +45,7 @@ Array::Array(std::ostream& ostream): Ostream_(ostream){
 Array::Array(const Array& array):Ostream_(array.Ostream_){
     Size_=array.Size();
     Capacity_=array.Capacity();
-    Elements_=new int[Capacity()];
+    Elements_=new long long[Capacity()];
     for(size_t i=0;i<Size();i++){
         Elements_[i]=array.Elements_[i];
     }
@@ -55,7 +55,7 @@ Array::Array(size_t size, std::ostream& ostream , int defaultValue ):
         Ostream_(ostream){
     Size_=size;
     Capacity_=2*size;
-    Elements_=new int[Capacity_];
+    Elements_=new long long[Capacity_];
     for(size_t i=0;i<size;i++){
         Elements_[i]=defaultValue;
     }
@@ -74,7 +74,7 @@ size_t Array::Capacity() const{
 }
 void Array::Reserve(size_t newCapacity){
     if (newCapacity>Capacity()) {
-        int *Elem_ = new int[newCapacity];
+        long long *Elem_ = new long long[newCapacity];
         for (size_t i = 0; i < Size(); i++) {
             Elem_[i] = Elements_[i];
         }
@@ -99,7 +99,7 @@ void Array::PopBack(){
     if(Size_>0)
         Size_--;
 }
-int& Array::operator [](const size_t& i){
+long long& Array::operator [](const size_t& i){
     return *(Elements_+i);
 }
 
@@ -178,15 +178,15 @@ bool Array::operator >=(const Array& it) const{
 
     }return true;
 }
-std::ostream& operator <<(std::ostream& ostream, const Array& array){
+std::ostream& operator <<(std::ostream& ostream, const Array& array) {
 
-    ostream<<"Result Array's capacity is " <<array.Capacity()<<" and size is "<<array.Size();
-    if (array.Size()!=0){
-        ostream<<", elements are:";
-        for(size_t i=0;i<array.Size()-1;i++){
-            ostream<<" "<<array.Elements_[i]<<",";
+    ostream << "Result Array's capacity is " << array.Capacity() << " and size is " << array.Size();
+    if (array.Size() != 0) {
+        ostream << ", elements are:";
+        for (size_t i = 0; i < array.Size() - 1; i++) {
+            ostream << " " << array.Elements_[i] << ",";
         }
-        ostream<<" "<<array.Elements_[array.Size()-1];
+        ostream << " " << array.Elements_[array.Size() - 1];
     }
 
 
