@@ -196,7 +196,6 @@ template<class T> // + не эвивалентен += поэтому нужно 
 TFlattenedIterator<T> operator + ( size_t lhs,  const  TFlattenedIterator<T>& rhs){
     return TFlattenedIterator<T>(rhs.innerIter_,rhs.flatten_vec, rhs.pref_sum, lhs + rhs.counter, rhs.size);
 }
-
 template<class T>
 bool operator == ( const TFlattenedIterator<T>& lhs, size_t rhs){
     return lhs.counter == rhs;
