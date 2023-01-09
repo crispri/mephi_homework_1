@@ -154,10 +154,6 @@ public:
 
     template<class A>
     friend bool operator == (const TFlattenedIterator<A>& lhs, const TFlattenedIterator<A>& rhs);
-
-
-
-
 private:
     TInnerIter innerIter_;
     std::vector<std::vector<T>>&flatten_vec;
