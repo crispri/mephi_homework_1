@@ -162,8 +162,8 @@ private:
     TInnerIter innerIter_;
     std::vector<std::vector<T>>&flatten_vec;
     std::vector<int>& pref_sum;
-    size_t counter;
-    size_t size;
+    int counter;
+    int size;
 
 };
 template<class T >
@@ -230,7 +230,8 @@ public:
 private:
     std::vector<int> pref_sum;
     std::vector<std::vector<T>>& input_;
-    size_t size;
-    size_t counter;
+    int size;
+    int counter;
 };
+
 
