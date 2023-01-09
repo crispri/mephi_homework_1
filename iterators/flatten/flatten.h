@@ -9,7 +9,7 @@ public:
     using pointer           = T*;  // or also value_type*
     using reference         = T&;
     using TInnerIter = typename std::vector<std::vector<T>>::iterator;
-    TFlattenedIterator(TInnerIter innerIter, std::vector<std::vector<T>>& flatten_vec,std::vector<int>& pref_sum, size_t conuter, size_t size):
+    TFlattenedIterator(TInnerIter innerIter, std::vector<std::vector<T>>& flatten_vec,std::vector<size_t>& pref_sum, size_t conuter, size_t size):
             innerIter_(innerIter), flatten_vec(flatten_vec),  pref_sum(pref_sum), counter(conuter), size(size){}
     reference operator*() const{
         size_t l =1;
@@ -161,9 +161,9 @@ public:
 private:
     TInnerIter innerIter_;
     std::vector<std::vector<T>>&flatten_vec;
-    std::vector<int>& pref_sum;
-    int counter;
-    int size;
+    std::vector<size_t>& pref_sum;
+    size_t counter;
+    size_t size;
 
 };
 template<class T >
@@ -228,10 +228,10 @@ public:
         return TFlattenedIterator<T>(input_.end(), input_, pref_sum, input_.empty()? 0:pref_sum[size], size);
     }
 private:
-    std::vector<int> pref_sum;
+    std::vector<size_t> pref_sum;
     std::vector<std::vector<T>>& input_;
-    int size;
-    int counter;
+    size_t size;
+    size_t counter;
 };
 
 
